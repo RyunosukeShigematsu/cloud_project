@@ -5,36 +5,26 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #ecf0f1;
-}
-
-.container {
-    text-align: center;
-    width: 80%;
-    max-width: 500px;
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background-color: #ecf0f1; /* 背景色は薄いグレー */
 }
 
 /* プログレスバーの外枠（グレーの部分） */
 .progress-container {
-    width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 25px;
-    margin: 20px 0;
-    height: 30px;
-    overflow: hidden; /* 角丸からはみ出さないように */
+    width: 80%;           /* 画面幅の80% */
+    max-width: 500px;     /* 最大幅 */
+    height: 30px;         /* バーの太さ */
+    background-color: #d0d0d0; /* 下地の色 */
+    border-radius: 15px;  /* 角丸 */
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* うっすら影 */
 }
 
 /* 中身のバー（青い部分） */
 .progress-bar {
     height: 100%;
-    width: 0%; /* 最初は0% */
+    width: 0%;            /* 最初は0% */
     background-color: #007AFF;
-    border-radius: 25px 0 0 25px;
-    /* transitionはJSで動的に設定するのでここは空でOKですが、
-       なめらかさのために一応入れておきます */
+    border-radius: 15px 0 0 15px;
+    /* アニメーション設定はJSで行いますが、初期設定として置いておきます */
     transition: width linear; 
 }
