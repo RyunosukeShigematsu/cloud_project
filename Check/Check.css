@@ -1,0 +1,47 @@
+/* Check.css */
+
+/* --- 上の部分（レイアウト・図形定義）はそのまま --- */
+body { margin: 0; padding: 0; font-family: sans-serif; background-color: #f4f4f4; height: 100vh; display: flex; justify-content: center; }
+.container { width: 100%; max-width: 600px; height: 100%; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; }
+.center-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding-bottom: 20%; }
+.black-box { width: 100%; height: 200px; background-color: black; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-radius: 4px; display: flex; justify-content: center; align-items: center; }
+
+/* 図形のスタイル（そのまま） */
+.shape { display: block; }
+.shape-circle { width: 80px; height: 80px; background-color: white; border-radius: 50%; }
+.shape-square { width: 80px; height: 80px; background-color: white; }
+.shape-triangle { width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 90px solid white; }
+.shape-diamond { width: 60px; height: 60px; background-color: white; transform: rotate(45deg); }
+
+/* 下部のエリア（そのまま） */
+.bottom-area { height: 180px; flex-shrink: 0; width: 100%; text-align: center; display: flex; flex-direction: column; justify-content: flex-start; }
+.instruction-text { margin-bottom: 20px; font-weight: bold; color: #555; font-size: 14px; }
+.options-grid { display: flex; justify-content: space-between; gap: 8px; width: 100%; }
+
+/* --- 【変更】ボタンのスタイル（文字用に戻す） --- */
+.option-btn {
+    flex: 1;               /* 均等配置 */
+    height: 50px;          /* 高さは適度に */
+    padding: 0;            /* 文字の中央揃えのためpaddingは0に */
+    
+    font-size: 16px;       /* 文字サイズ */
+    font-weight: bold;
+    color: white;
+    background-color: #007AFF;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    /* 文字をど真ん中に */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.option-btn:active {
+    background-color: #005bb5;
+    transform: scale(0.95);
+}
+
+/* ★前回追加した .option-btn .shape-... 系の設定はすべて削除しました */

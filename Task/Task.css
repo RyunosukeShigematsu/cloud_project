@@ -1,126 +1,99 @@
-/* 全体のレイアウト設定 */
+/* Task.css */
+
+/* --- ここはそのまま --- */
 body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
     background-color: #f4f4f4;
-    height: 100vh; /* 画面いっぱいの高さ */
+    height: 100vh;
     display: flex;
     justify-content: center;
 }
 
 .container {
     width: 100%;
-    max-width: 600px; /* スマホ想定の最大幅 */
+    max-width: 600px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    position: relative;
     padding: 20px;
     box-sizing: border-box;
 }
 
-/* --- 真ん中の枠エリア --- */
+/* --- 【重要】Checkと同じ設定にする --- */
 .center-area {
-    flex-grow: 1; /* 余ったスペースを占有 */
-    display: flex;
-    justify-content: center;
-    align-items: center; /* 上下中央 */
-    padding-bottom: 20%; /* これを入れることで「ど真ん中」より少し上にずらす */
-}
-
-/* 鉤括弧（カギカッコ）のある枠のデザイン */
-.finder-box {
-    width: 250px;  /* 枠の幅 */
-    height: 250px; /* 枠の高さ */
-    position: relative;
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #333;
-    font-weight: bold;
-    
-    /* 背景色（必要なければ transparent に） */
-    background-color: white; 
+    padding-bottom: 20%; /* Checkと同じパディング */
 }
 
-/* 四隅の線を作る（擬似要素を使用） */
-.finder-box::before,
-.finder-box::after {
-    content: "";
-    position: absolute;
-    width: 30px;  /* カギカッコの長さ */
-    height: 30px; /* カギカッコの長さ */
-    border: 4px solid #007AFF; /* 線の太さと色 */
-    transition: all 0.3s;
-}
-
-/* 左上と右上の枠 */
-.finder-box::before {
-    top: -2px;
-    left: -2px;
-    border-bottom: none;
-    border-right: none;
-    
-    /* 右上も同時に作るために shadow を使うテクニックもありますが、
-       今回はシンプルにborder-topとborder-leftで左上を作り、
-       もう一つの要素を追加して右下を作るのではなく、
-       CSSのグラデーションを使うともっと綺麗ですが、
-       今回は「左上」と「右下」の擬似要素で表現します。 */
-}
-
-/* 枠線を描画するもっとも確実な方法（4つの角を作る） */
-.finder-box {
-    /* 既存のborderをリセット */
-    border: none;
-}
-
-/* 再定義：四隅に配置するスパン要素を使うのが一番確実です */
-/* HTMLを汚さないように、CSSの背景グラデーションで四隅を描きます */
-.finder-box {
-    background-image: 
-        linear-gradient(#007AFF, #007AFF), /* 左上の縦 */
-        linear-gradient(#007AFF, #007AFF), /* 左上の横 */
-        linear-gradient(#007AFF, #007AFF), /* 右上の縦 */
-        linear-gradient(#007AFF, #007AFF), /* 右上の横 */
-        linear-gradient(#007AFF, #007AFF), /* 左下の縦 */
-        linear-gradient(#007AFF, #007AFF), /* 左下の横 */
-        linear-gradient(#007AFF, #007AFF), /* 右下の縦 */
-        linear-gradient(#007AFF, #007AFF); /* 右下の横 */
-
-    background-repeat: no-repeat;
-    
-    /* 線のサイズと位置設定 */
-    background-size: 4px 30px, 30px 4px; /* 線の太さ4px, 長さ30px */
-    
-    background-position: 
-        top left, top left,       /* 左上 */
-        top right, top right,     /* 右上 */
-        bottom left, bottom left, /* 左下 */
-        bottom right, bottom right; /* 右下 */
-}
-
-
-/* --- 下部のボタンエリア --- */
-.bottom-area {
-    margin-bottom: 40px; /* 一番下からの余白 */
+.black-box {
     width: 100%;
-    text-align: center;
+    height: 200px;
+    background-color: black;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.action-btn {
-    width: 80%;
-    padding: 18px;
-    font-size: 18px;
+/* 文字スタイル（そのまま） */
+.time-display {
+    color: white;
+    font-size: 64px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+.colon { margin: 0 5px; position: relative; top: -4px; }
+.hidden { display: none; }
+
+
+/* --- 【重要】下のエリアの高さをCheckと揃える --- */
+.bottom-area {
+    height: 180px;      /* ★ここを追加（Checkと同じ高さ） */
+    flex-shrink: 0;     /* ★ここを追加 */
+    
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* 上詰め */
+}
+
+.instruction-text {
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #555;
+    font-size: 14px;
+}
+
+/* 丸ボタン（そのまま） */
+.round-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-size: 16px;
     font-weight: bold;
     color: white;
     background-color: #007AFF;
     border: none;
-    border-radius: 50px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
 }
-
-.action-btn:active {
-    transform: scale(0.98);
+.round-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+}
+.round-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
 }

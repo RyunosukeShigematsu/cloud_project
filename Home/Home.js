@@ -58,5 +58,5 @@ nextBtn.addEventListener('click', () => {
     console.log("ダミー回答:", selectedDummy ? selectedDummy.value : "なし");
 
     // ID生成処理は window.onload に移動したので、ここは画面遷移だけでOK
-    window.location.href = '../Task/Task.html';
+    window.location.href = '../Check/Check.html';
 });
