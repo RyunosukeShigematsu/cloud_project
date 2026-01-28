@@ -1,13 +1,35 @@
+/* Test.js */
+
 // 要素の取得
 const selects = document.querySelectorAll('.digit-select');
 const finishBtn = document.getElementById('finishBtn');
+const colonSpan = document.querySelector('.colon'); // コロンを取得
 
-// ポップアップ関連の要素
+// ポップアップ関連
 const modal = document.getElementById('modal');
 const cancelBtn = document.getElementById('cancelBtn');
 const confirmBtn = document.getElementById('confirmBtn');
 
-// 入力チェック関数
+// 画面読み込み時：Task画面の設定を引き継ぐ
+window.addEventListener('DOMContentLoaded', () => {
+    const infoType = sessionStorage.getItem('task_info_type');
+    
+    // もしTask画面が「数字モード(number)」だったら、ここでもコロンを隠す
+    if (infoType === 'number') {
+        if (colonSpan) {
+            colonSpan.style.visibility = 'hidden'; // スペースは残して非表示
+        }
+    } else {
+        // 時計モードなら何もしない（デフォルトで表示）
+        if (colonSpan) {
+            colonSpan.style.visibility = 'visible';
+        }
+    }
+});
+
+
+// --- 以下、既存のロジック ---
+
 function checkAllSelected() {
     const allSelected = Array.from(selects).every(select => select.value !== "");
 
@@ -22,24 +44,20 @@ selects.forEach(select => {
     select.addEventListener('change', checkAllSelected);
 });
 
-// --- ここから変更 ---
-
-// 1. 「完了」ボタンを押したら -> ポップアップを表示
+// 完了ボタン -> ポップアップ表示
 finishBtn.addEventListener('click', () => {
     modal.classList.remove('hidden');
 });
 
-// 2. 「回答に戻る」ボタンを押したら -> ポップアップを隠す
+// 回答に戻る
 cancelBtn.addEventListener('click', () => {
     modal.classList.add('hidden');
 });
 
-// 3. 「完了する」ボタンを押したら -> 本当に次の画面へ
+// 本当に完了 -> Finishへ
 confirmBtn.addEventListener('click', () => {
-    // 入力された時間を取得（ログ用）
     const time = `${selects[0].value}${selects[1].value}:${selects[2].value}${selects[3].value}`;
     console.log("最終回答:", time);
     
-    // Finishページへ遷移
     window.location.href = '../Finish/Finish.html';
 });

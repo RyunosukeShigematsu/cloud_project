@@ -82,22 +82,29 @@ h1 {
 .copy-btn:hover {
     background-color: #005bb5;
 }
+/* Finish.css */
 
-/* コピー完了時のスタイル（JSで付与） */
+/* コピーボタン */
+.copy-btn {
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.copy-btn:hover {
+    background-color: #005bb5;
+}
+
+/* --- 【変更】コピー完了時のスタイルをグレーにする --- */
 .copy-btn.copied {
-    background-color: #28a745; /* 緑色 */
-    cursor: default;
+    background-color: #999; /* グレーに変更 */
+    cursor: default;        /* カーソルを矢印に戻す */
+    pointer-events: none;   /* 連打できないようにする（お好みで） */
 }
 
-.note {
-    font-size: 12px;
-    color: #888;
-    margin-top: 10px;
-    margin-bottom: 0;
-}
-
-.thank-you {
-    margin-top: 30px;
-    font-weight: bold;
-    color: #555;
-}
+/* ... (下の部分はそのまま) ... */
