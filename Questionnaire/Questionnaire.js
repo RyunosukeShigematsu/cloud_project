@@ -3,19 +3,16 @@
 // 要素取得
 const q1Text = document.getElementById('q1_text');
 const q2Text = document.getElementById('q2_text');
-const followUpDiv = document.getElementById('followUpQuestions');
-const nextBtn = document.getElementById('nextBtn'); // 送信ボタン
+const step1Area = document.getElementById('step1_area');
+const step2Area = document.getElementById('step2_area'); // Q2, Q3
+const commonArea = document.getElementById('common_area'); // Q4(自信度)
+const nextBtn = document.getElementById('nextBtn');
 const form = document.getElementById('questForm');
 
-// ==========================================
-// 初期化処理
-// ==========================================
 window.addEventListener('DOMContentLoaded', () => {
-    // 戻るボタン無効化
     history.pushState(null, null, location.href);
     window.addEventListener('popstate', () => history.go(1));
 
-    // 文言の切り替え
     const infoType = sessionStorage.getItem('task_info_type');
     if (infoType === 'number') {
         q1Text.innerText = "Q1. 表示された数字を見ましたか？";
@@ -29,19 +26,35 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// Q1の分岐
+// Q1の分岐ロジック
 // ==========================================
-const q1Radios = document.getElementsByName('q1');
-q1Radios.forEach(radio => {
+document.getElementsByName('q1').forEach(radio => {
     radio.addEventListener('change', (e) => {
-        if (e.target.value === 'yes') {
-            followUpDiv.classList.remove('hidden');
-        } else {
-            followUpDiv.classList.add('hidden');
-            resetRadio('q2');
-            resetRadio('q3');
-        }
-        checkValidity();
+        
+        // アニメーション用に少し遅らせて切り替え
+        setTimeout(() => {
+            if (e.target.value === 'yes') {
+                // --- Yesの場合 ---
+                // Q1を隠し、Q2,Q3(詳細) と Q4(自信度) を両方表示
+                step1Area.classList.add('hidden');
+                step2Area.classList.remove('hidden');
+                commonArea.classList.remove('hidden'); 
+            } else {
+                // --- Noの場合 ---
+                // Q1を表示したままにするか、あるいは「送信ボタンだけ」の状態にするか
+                // ここでは「Q1は見えたまま、他は全部隠す」挙動にします
+                // (もしQ1も消したい場合は step1Area.classList.add('hidden') してください)
+                
+                step2Area.classList.add('hidden');  // Q2, Q3 隠す
+                commonArea.classList.add('hidden'); // Q4(自信度) も隠す ★修正
+                
+                // 隠した項目の選択リセット
+                resetRadio('q2');
+                resetRadio('q3');
+                resetRadio('confidence');
+            }
+            checkValidity();
+        }, 200);
     });
 });
 
@@ -53,17 +66,29 @@ function resetRadio(name) {
 // バリデーション
 // ==========================================
 function checkValidity() {
-    const q1Val = getRadioValue('q1');
-    if (!q1Val) { nextBtn.disabled = true; return; }
-    
-    // NoならOK
-    if (q1Val === 'no') { nextBtn.disabled = false; return; }
-    
-    // YesならQ2, Q3も必須
-    if (!getRadioValue('q2') || !getRadioValue('q3')) {
-        nextBtn.disabled = true;
+    const q1 = getRadioValue('q1');
+    const conf = getRadioValue('confidence');
+
+    // Q1未回答ならボタン無効
+    if (!q1) { nextBtn.disabled = true; return; }
+
+    // --- Noの場合 ---
+    if (q1 === 'no') {
+        // 即OK (他は答える必要なし)
+        nextBtn.disabled = false;
         return;
     }
+
+    // --- Yesの場合 ---
+    // Q2, Q3, Q4(自信度) すべて必須
+    if (q1 === 'yes') {
+        if (!getRadioValue('q2') || !getRadioValue('q3') || !conf) {
+            nextBtn.disabled = true;
+            return;
+        }
+    }
+
+    // ここまで来ればOK
     nextBtn.disabled = false;
 }
 
@@ -75,34 +100,39 @@ function getRadioValue(name) {
 }
 
 // ==========================================
-// ★重要: データ送信処理 (ここでPHPを叩きます)
+// 送信処理
 // ==========================================
 nextBtn.addEventListener('click', async () => {
     
-    // 1. ボタンを無効化（連打防止）
     nextBtn.disabled = true;
     nextBtn.innerText = "送信中...";
 
-    // 2. アンケート回答を取得
-    const q1 = getRadioValue('q1');
-    const q2 = (q1 === 'yes') ? getRadioValue('q2') : null;
-    const q3 = (q1 === 'yes') ? getRadioValue('q3') : null;
+    // 1. 回答取得
+    const q1Val = getRadioValue('q1');
+    
+    // Q1がYesなら値を取得、Noならnull
+    const q2Val = (q1Val === 'yes') ? getRadioValue('q2') : null;
+    const q3Val = (q1Val === 'yes') ? getRadioValue('q3') : null;
+    const confVal = (q1Val === 'yes') ? getRadioValue('confidence') : null; // ★修正: Noならnull
 
-    // 3. Test画面で作った箱(sessionStorage)を取り出す
+    // 2. データ準備
     const rawData = sessionStorage.getItem('final_experiment_data');
     let finalData = {};
     if (rawData) {
         finalData = JSON.parse(rawData);
+    } else {
+        alert("エラー: データが見つかりません");
+        return;
     }
 
-    // 4. 箱にアンケート結果を入れる
-    finalData.quest_seen = q1;
-    finalData.quest_noticed = q2;
-    finalData.quest_memo = q3;
+    // 3. データ結合
+    finalData.quest_seen = q1Val;
+    finalData.quest_noticed = q2Val;
+    finalData.quest_memo = q3Val;
+    finalData.quest_confidence = confVal;
 
-    // 5. サーバーへ送信！
+    // 4. 送信
     try {
-        // ※PHPのパスはフォルダ構成に合わせてください (例: ../API/submit.php)
         const response = await fetch('https://shigematsu.nkmr.io/m1_cloud/database.php', { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -110,18 +140,15 @@ nextBtn.addEventListener('click', async () => {
         });
 
         if (response.ok) {
-            // 送信成功！
-            // 最新データを保存し直す（Finish画面のログ用）
             sessionStorage.setItem('final_experiment_data', JSON.stringify(finalData));
-            
-            // Finish画面へ移動
             window.location.replace('../Finish/Finish.html');
         } else {
-            throw new Error('送信エラー');
+            const errorText = await response.text();
+            throw new Error(`送信エラー: ${errorText}`);
         }
 
     } catch (error) {
-        alert("データの送信に失敗しました。通信環境を確認してもう一度お試しください。");
+        alert("送信に失敗しました。" + error.message);
         console.error(error);
         nextBtn.disabled = false;
         nextBtn.innerText = "結果を送信して終了";
