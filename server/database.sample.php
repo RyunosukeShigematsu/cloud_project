@@ -26,9 +26,9 @@ ini_set('display_errors', 0);
 // 2. データベース接続設定
 // ==========================================
 $host = 'localhost';
-$db = 'ryu_db';
-$user = 'nakamura-lab';
-$pass = 'n1k2m3r4fms';
+$db = 'YOUR_DB_NAME';
+$user = 'YOUR_DB_USER';
+$pass = 'YOUR_DB_PASSWORD';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -42,7 +42,7 @@ try {
   $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
   http_response_code(500);
-  echo json_encode(["status" => "error", "message" => "DB Connection failed: " . $e->getMessage()]);
+  echo json_encode(["status"=>"error","message"=>"DB Connection failed"]);
   exit();
 }
 
